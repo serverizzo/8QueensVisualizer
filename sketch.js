@@ -1,9 +1,9 @@
 function setup() {
 
-    let screenSize = min(displayWidth, displayHeight)
+    screenSize = min(displayWidth, displayHeight)
 
-    let boardSize = .7 * screenSize
-    let controlPannelSize = .3 * screenSize
+    boardSize = .7 * screenSize
+    controlPannelSize = .3 * screenSize
 
     createCanvas(screenSize, screenSize)
     background(220);
@@ -11,7 +11,7 @@ function setup() {
     numQueens = 8
 
 
-    setupControlPannel(controlPannelSize, boardSize, screenSize)
+    setupControlPannel(controlPannelSize, boardSize, screenSize, 8)
 
     // setup board
     drawBoard(screenSize, boardSize, controlPannelSize)
@@ -25,7 +25,10 @@ function draw() {
     // console.log(numQueens)
 
     let queensSliderPointer = select("#controlPannel #queensSlider")
-    console.log(queensSliderPointer.value())
+
+    let numberOfQueens = queensSliderPointer.value()
+    drawBoard(screenSize, boardSize, controlPannelSize, numberOfQueens)
+    // console.log(queensSliderPointer.value())
 
 
     frameRate(10)
@@ -55,6 +58,7 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
     // queensSlider.position(controlPannelSize * .25, displayHeight * .25)
     numQueens = queensSlider.value()
 
+    controlPannel.child(createElement("h3", " Number of Queens"))
     controlPannel.child(queensSlider)
 
 
@@ -63,18 +67,18 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 }
 
 
-function drawBoard(screenSize, boardSize, controlPannelOffset) {
+function drawBoard(screenSize, boardSize, controlPannelOffset, numberOfQueens = 8) {
 
     let yOffset = (screenSize - boardSize) / 2
 
-    let black = color(25)
-    let white = color(130)
+    let black = color(130)
+    let white = color(25)
 
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
+    for (let i = 0; i < numberOfQueens; i++) {
+        for (let j = 0; j < numberOfQueens; j++) {
             if ((i + j) % 2 == 0) { fill(black) }
             else { fill(white) }
-            square((i * (boardSize / 8) + controlPannelOffset), (j * (boardSize / 8)) + yOffset, boardSize / 8)
+            square((i * (boardSize / numberOfQueens) + controlPannelOffset), (j * (boardSize / numberOfQueens)) + yOffset, boardSize / numberOfQueens)
 
             // fill()
         }
