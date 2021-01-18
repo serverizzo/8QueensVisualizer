@@ -6,12 +6,12 @@ function setup() {
     let controlPannelSize = .3 * screenSize
 
     createCanvas(screenSize, screenSize)
-
-
     background(220);
 
+    numQueens = 8
 
-    setupControlPannel(controlPannelSize)
+
+    setupControlPannel(controlPannelSize, boardSize, screenSize)
 
     // setup board
     drawBoard(screenSize, boardSize, controlPannelSize)
@@ -22,14 +22,43 @@ function setup() {
 
 function draw() {
 
+    // console.log(numQueens)
+
+    let queensSliderPointer = select("#controlPannel #queensSlider")
+    console.log(queensSliderPointer.value())
+
+
+    frameRate(10)
+
 
 }
 
-function setupControlPannel(controlPannelSize) {
+function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 
-    let backgroundColor = color(255, 204, 0);
-    fill(backgroundColor)
-    rect(0, 0, controlPannelSize, displayHeight)
+    let yOffset = (screenSize - boardSize) / 2
+
+    // let backgroundColor = color(255, 204, 0);
+    // fill(backgroundColor)
+    // rect(0, yOffset, controlPannelSize, boardSize)
+
+    let controlPannel = createDiv("this is some text")
+    controlPannel.id("controlPannel")
+    controlPannel.style("height", boardSize + "px")
+    controlPannel.style("border", "1px solid black")
+    controlPannel.style("width", controlPannelSize + "px")
+    controlPannel.position(0, 0 + yOffset)
+
+    // controlPannel.parent("main")
+
+    let queensSlider = createSlider(1, 16, 8, 1)
+    queensSlider.id("queensSlider")
+    // queensSlider.position(controlPannelSize * .25, displayHeight * .25)
+    numQueens = queensSlider.value()
+
+    controlPannel.child(queensSlider)
+
+
+    return numQueens
 
 }
 
