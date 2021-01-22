@@ -10,16 +10,13 @@ function setup() {
 
     numQueens = 8
 
-
-
-
-
     setupControlPannel(controlPannelSize, boardSize, screenSize, 8)
 
     // setup board
     drawBoard(screenSize, boardSize, controlPannelSize)
 
-
+    // noLoop()
+    x = 10
 
 }
 
@@ -28,16 +25,19 @@ function draw() {
     // console.log(numQueens)
 
     let queensSliderPointer = select("#controlPannel #queensSlider")
-    let frameRateSlider = select("#controlPannel #frameRateSlider")
+    // let frameRateSlider = select("#controlPannel #frameRateSlider")
 
-    let numberOfQueens = queensSliderPointer.value()
-    drawBoard(screenSize, boardSize, controlPannelSize, numberOfQueens)
+    // let numberOfQueens = queensSliderPointer.value()
+    // drawBoard(screenSize, boardSize, controlPannelSize, numberOfQueens)
     // console.log(queensSliderPointer.value())
 
+    frameRate(5)
+    square(x, x, 10)
+    x += 10
 
 
 
-    frameRate(frameRateSlider.value())
+    // frameRate(frameRateSlider.value())
 
 
 }
@@ -69,7 +69,7 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
     numQueens = queensSlider.value()
 
     // frameRate Slider
-    let frameRateSlider = createSlider(5, 60, 10, 5)
+    let frameRateSlider = createSlider(100, 2000, 1000, 100)
     frameRateSlider.id("frameRateSlider")
 
     // Start button
@@ -93,23 +93,55 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 }
 
 
-function drawBoard(screenSize, boardSize, controlPannelOffset, numberOfQueens = 8) {
+function drawBoard(screenSize = screenSize, boardSize = boardSize, controlPannelOffset = controlPannelSize, numberOfQueens = 8) {
 
     let yOffset = (screenSize - boardSize) / 2
 
     let black = color(130)
     let white = color(25)
 
+    // drawboard
     for (let i = 0; i < numberOfQueens; i++) {
         for (let j = 0; j < numberOfQueens; j++) {
             if ((i + j) % 2 == 0) { fill(black) }
             else { fill(white) }
             square((i * (boardSize / numberOfQueens) + controlPannelOffset), (j * (boardSize / numberOfQueens)) + yOffset, boardSize / numberOfQueens)
-
-            // fill()
         }
     }
 }
+
+function drawBoard2(board) {
+
+    let numberOfQueens = board.length
+    let yOffset = (screenSize - boardSize) / 2
+    // set the drawing point to the top left of the board
+    // translate(controlPannelSize, yOffset)
+
+    let black = color(130)
+    let white = color(25)
+
+    // drawboard
+    for (let i = 0; i < numberOfQueens; i++) {
+        for (let j = 0; j < numberOfQueens; j++) {
+            if ((i + j) % 2 == 0) { fill(black) }
+            else { fill(white) }
+            square((i * (boardSize / numberOfQueens) + controlPannelSize), (j * (boardSize / numberOfQueens)) + yOffset, boardSize / numberOfQueens)
+        }
+    }
+}
+
+function drawQueens(board, currentQueen) {
+    let numberOfQueens = board.length
+    let yOffset = (screenSize - boardSize) / 2
+    // set the drawing point to the top left of the board
+    // translate(controlPannelSize, yOffset)
+    let queen = color(20, 20, 117)
+    fill(queen)
+    for (let i = 0; i < currentQueen + 1; i++) {
+        square(i * (boardSize / numberOfQueens) + controlPannelSize, board[i] * (boardSize / numberOfQueens) + yOffset, boardSize / numberOfQueens)
+    }
+}
+
 
 
 // Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
@@ -117,6 +149,10 @@ function drawBoard(screenSize, boardSize, controlPannelOffset, numberOfQueens = 
 function beginSolver() {
     let s = new Solver()
     s.solve()
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 class Solver {
@@ -127,8 +163,13 @@ class Solver {
     }
 
 
-    solve() {
+    async solve() {
+
+        // square(300, 150, 20)
+
         let queensSliderPointer = select("#controlPannel #queensSlider")
+        let frameRateSlider = select("#controlPannel #frameRateSlider")
+
         this.numberOfQueens = queensSliderPointer.value()
         this.board = []
         for (let i = 0; i < this.numberOfQueens; i++) {
@@ -139,6 +180,11 @@ class Solver {
         let curr = 0
         while (curr > -1) {
             // console.log(this.board)
+
+            await sleep(frameRateSlider.value())
+            drawBoard2(this.board)
+            drawQueens(this.board, curr)
+            console.log("hello")
 
             // if we found a solution
             if (curr >= this.numberOfQueens) {
@@ -205,3 +251,9 @@ class Solver {
     }
 
 }
+
+
+// for next time:
+/*
+    There are conflicts with drawing the board as well as trying to draw on the board since drawing the board is already in the draw function.
+*/
