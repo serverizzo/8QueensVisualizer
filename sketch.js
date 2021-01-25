@@ -147,6 +147,11 @@ function drawQueens(board, currentQueen) {
 // Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
 // Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.
 function beginSolver() {
+
+    // TODO
+    // Disable start button to stop two solvers running simultaniously
+
+
     let s = new Solver()
     s.solve()
 }
@@ -204,7 +209,7 @@ class Solver {
                 this.board[curr] += 1
             }
 
-            else if (this.isOkay(curr)) {
+            else if (await this.isOkay(curr)) {
                 curr += 1
             }
             else {
@@ -213,29 +218,44 @@ class Solver {
         }
     }
 
-    isOkay(currentQueen) {
-        if (this.checkDiagUp(currentQueen) && this.checkLeft(currentQueen) && this.checkDiagDown(currentQueen)) {
-            // if (this.checkLeft(currentQueen)) {
+    async isOkay(currentQueen) {
+        // if (this.checkDiagUp(currentQueen) && this.checkLeft(currentQueen) && this.checkDiagDown(currentQueen)) {
+        if (await this.checkLeft(currentQueen)) {
             // if (this.checkDiagDown(currentQueen)){
             return true
         }
         else { return false }
     }
 
-    checkDiagDown(currentQueen) {
+    async checkDiagDown(currentQueen) {
+        // let yOffset = (screenSize - boardSize) / 2
+        // let frameRateSlider = select("#controlPannel #frameRateSlider")
         for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] + i < this.numberOfQueens; i++) {
+            // let checkColor = color(80, 224, 47)
+            // fill(checkColor)
+            // // Current queen - number of sports to check back
+            // square(((currentQueen - i) * (boardSize / this.numberOfQueens)) + controlPannelSize, this.board[currentQueen] + yOffset, boardSize / this.numberOfQueens)
             if (this.board[currentQueen] + i == this.board[currentQueen - i]) {
                 return false
             }
+            // await sleep(frameRateSlider.value())
+            // console.log("hello from checkDiagDown")
         }
         return true
     }
 
-    checkLeft(currentQueen) {
-        for (let i = 0; i < currentQueen; i++) {
+    async checkLeft(currentQueen) {
+        let yOffset = (screenSize - boardSize) / 2
+        let frameRateSlider = select("#controlPannel #frameRateSlider")
+        let checkColor = color(80, 224, 47)
+        fill(checkColor)
+        for (let i = currentQueen - 1; i > -1; i--) {
+            square((i * (boardSize / this.numberOfQueens)) + controlPannelSize, (this.board[currentQueen] * (boardSize / this.numberOfQueens)) + yOffset, (boardSize / this.numberOfQueens))
+            console.log("hello from checkleft")
             if (this.board[currentQueen] == this.board[i]) {
                 return false
             }
+            await sleep(frameRateSlider.value())
         }
         return true
     }
