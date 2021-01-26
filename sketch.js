@@ -130,17 +130,7 @@ async function drawBoard2(board) {
     }
 }
 
-async function drawQueens(board, currentQueen) {
-    let numberOfQueens = board.length
-    let yOffset = (screenSize - boardSize) / 2
-    // set the drawing point to the top left of the board
-    // translate(controlPannelSize, yOffset)
-    let queen = color(20, 20, 117)
-    fill(queen)
-    for (let i = 0; i < currentQueen + 1; i++) {
-        square(i * (boardSize / numberOfQueens) + controlPannelSize, board[i] * (boardSize / numberOfQueens) + yOffset, boardSize / numberOfQueens)
-    }
-}
+
 
 
 
@@ -167,6 +157,8 @@ class Solver {
         this.board;
 
         this.checkColor = color(80, 224, 47)
+        this.queensColor = color(20, 20, 117)
+
         this.yOffset = (screenSize - boardSize) / 2
         this.xOffset = controlPannelSize
         this.frameRateSlider = select("#controlPannel #frameRateSlider")
@@ -192,7 +184,7 @@ class Solver {
             // console.log(this.board)
 
             await drawBoard2(this.board)
-            await drawQueens(this.board, curr)
+            await this.drawQueens(this.board, curr)
             await sleep(this.frameRateSlider.value())
             console.log("hello")
 
@@ -223,6 +215,13 @@ class Solver {
         }
     }
 
+    async drawQueens(board, currentQueen) {
+        fill(this.queensColor)
+        for (let i = 0; i < currentQueen + 1; i++) {
+            square(i * (boardSize / this.numberOfQueens) + this.xOffset, board[i] * (boardSize / this.numberOfQueens) + this.yOffset, boardSize / this.numberOfQueens)
+        }
+    }
+
     async isOkay(currentQueen) {
         // if (this.checkDiagUp(currentQueen) && this.checkLeft(currentQueen) && this.checkDiagDown(currentQueen)) {
         // if (await this.checkLeft(currentQueen)) {
@@ -250,6 +249,7 @@ class Solver {
     }
 
     async checkLeft(currentQueen) {
+
         for (let currentCheck = currentQueen - 1; currentCheck > -1; currentCheck--) {
             fill(this.checkColor)
             square((currentCheck * (boardSize / this.numberOfQueens)) + this.xOffset, (this.board[currentQueen] * (boardSize / this.numberOfQueens)) + this.yOffset, (boardSize / this.numberOfQueens))
@@ -257,7 +257,7 @@ class Solver {
 
             await sleep(this.frameRateSlider.value())
             await drawBoard2(this.board)
-            await drawQueens(this.board, currentQueen)
+            await this.drawQueens(this.board, currentQueen)
 
             if (this.board[currentQueen] == this.board[currentCheck]) {
                 return false
@@ -267,17 +267,6 @@ class Solver {
         return true
     }
 
-    // checkDiagUp(currentQueen) {
-
-    //     for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] - i > -1; i++) {
-    //         fill(this.checkColor)
-    //         if (this.board[currentQueen] - i == this.board[currentQueen - i]) {
-    //             return false
-    //         }
-    //     }
-    //     return true
-    // }
-
     async checkDiagUp(currentQueen) {
 
         for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] - i > -1; i++) {
@@ -286,7 +275,7 @@ class Solver {
 
             await sleep(this.frameRateSlider.value())
             await drawBoard2(this.board)
-            await drawQueens(this.board, currentQueen)
+            await this.drawQueens(this.board, currentQueen)
 
             if (this.board[currentQueen] - i == this.board[currentQueen - i]) {
                 return false
@@ -294,27 +283,6 @@ class Solver {
         }
         return true
     }
-
-
-    // async checkDiagUp(currentQueen) {
-
-    //     console.log("hello from checkDiagUp")
-    //     for (let i = currentQueen - 1; i > -1 && this.board[currentQueen] - i > -1; i--) {
-    //         fill(this.checkColor)
-    //         square((i * (boardSize / this.numberOfQueens)) + this.xOffset, ((this.board[currentQueen] - (this.numberOfQueens - i)) * (boardSize / this.numberOfQueens)) + this.yOffset, (boardSize / this.numberOfQueens))
-    //         // if (this.board[i] == this.board[currentQueen] - (this.numberOfQueens - i)) {
-    //         if (this.board[currentQueen] - (currentQueen - 1) - i == this.board[i]) {
-    //             console.log(this.board[currentQueen] - i + " is equal to " + this.board[currentQueen - i])
-    //             console.log(this.board)
-    //             console.log("detected queen")
-    //             return false
-    //         }
-    //         await sleep(this.frameRateSlider.value())
-    //         await drawBoard2(this.board)
-    //         await drawQueens(this.board, currentQueen)
-    //     }
-    //     return true
-    // }
 
 }
 
