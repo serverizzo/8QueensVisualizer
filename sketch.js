@@ -81,6 +81,12 @@ class ControlPannel {
         startButton.id("startButton")
         startButton.mousePressed(beginSolver);
 
+        // Restart Button
+        let restartButton = createButton("Restart")
+        restartButton.id("restartButton")
+        restartButton.mousePressed(enable);
+        restartButton.attribute("disabled", "") // by default disable the disable the restart button
+
 
 
         // Put everything in the [DOM] div element 
@@ -90,8 +96,7 @@ class ControlPannel {
         controlPannel.child(frameRateSlider)
 
         controlPannel.child(startButton)
-
-        return numQueens
+        controlPannel.child(restartButton)
 
     }
 
@@ -101,6 +106,10 @@ class ControlPannel {
 
         queensSliderPointer.attribute("disabled", "")    // Disable the 
         startButtonPointer.attribute("disabled", "")
+    }
+
+    enable() {
+
     }
 
 }
@@ -216,7 +225,10 @@ class Solver {
             // console.log(this.board)
 
             await drawBoard2(this.board)
-            await this.drawQueens(curr)
+            if (this.board[curr] >= this.numberOfQueens) {
+                await this.drawQueens(curr - 1)
+            }
+            else { await this.drawQueens(curr) }
             await sleep(this.frameRateSlider.value())
             console.log("hello")
 
@@ -257,20 +269,23 @@ class Solver {
     async isOkay(currentQueen) {
         // if (this.checkDiagUp(currentQueen) && this.checkLeft(currentQueen) && this.checkDiagDown(currentQueen)) {
         // if (await this.checkLeft(currentQueen)) {
-        if (await this.checkDiagUp(currentQueen) && await this.checkLeft(currentQueen)) {
+        // if (await this.checkDiagUp(currentQueen) && await this.checkLeft(currentQueen)) {
+        if (await this.checkDiagUp(currentQueen) && await this.checkLeft(currentQueen) && await this.checkDiagDown(currentQueen)) {
             return true
         }
         else { return false }
     }
 
     async checkDiagDown(currentQueen) {
-        // let yOffset = (screenSize - boardSize) / 2
-        // let frameRateSlider = select("#controlPannel #frameRateSlider")
         for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] + i < this.numberOfQueens; i++) {
-            // let checkColor = color(80, 224, 47)
-            // fill(checkColor)
-            // // Current queen - number of sports to check back
-            // square(((currentQueen - i) * (boardSize / this.numberOfQueens)) + controlPannelSize, this.board[currentQueen] + yOffset, boardSize / this.numberOfQueens)
+            fill(this.checkColor)
+            square((currentQueen - i) * this.squareSize + this.xOffset, (this.board[currentQueen] + i) * this.squareSize + this.yOffset, this.squareSize)
+            console.log("hello from checkdiagDown")
+
+            await sleep(this.frameRateSlider.value())
+            await drawBoard2(this.board)
+            await this.drawQueens(currentQueen)
+
             if (this.board[currentQueen] + i == this.board[currentQueen - i]) {
                 return false
             }
