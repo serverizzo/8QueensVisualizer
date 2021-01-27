@@ -84,7 +84,7 @@ class ControlPannel {
         // Restart Button
         let restartButton = createButton("Restart")
         restartButton.id("restartButton")
-        restartButton.mousePressed(enable);
+        restartButton.mousePressed(this.enable);
         restartButton.attribute("disabled", "") // by default disable the disable the restart button
 
 
@@ -103,18 +103,18 @@ class ControlPannel {
     disable() {
         let queensSliderPointer = select("#controlPannel #queensSlider")
         let startButtonPointer = select("#controlPannel #startButton")
+        let restartButtonPointer = select("#controlPannel #restartButton")
 
         queensSliderPointer.attribute("disabled", "")    // Disable the 
         startButtonPointer.attribute("disabled", "")
+        restartButtonPointer.removeAttribute("disabled")
     }
 
     enable() {
-
+        console.log("Reset button pressed")
     }
 
 }
-
-
 
 function drawBoard(screenSize = screenSize, boardSize = boardSize, controlPannelOffset = controlPannelSize, numberOfQueens = 8) {
 
