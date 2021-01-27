@@ -10,11 +10,17 @@ function setup() {
 
     numQueens = 8
 
-    controlPannel = new ControlPannel()
-    controlPannel.setupControlPannel(controlPannelSize, boardSize, screenSize, 8)
+    setupControlPannel(controlPannelSize, boardSize, screenSize, 8)
 
     // setup board
     drawBoard(screenSize, boardSize, controlPannelSize)
+
+
+
+    someDumbGlobal = "Bakana?!"
+
+    solverObject = new Solver(8);
+
 
     // noLoop()
     x = 10
@@ -45,75 +51,108 @@ function draw() {
 
 }
 
-class ControlPannel {
-    setupControlPannel(controlPannelSize, boardSize, screenSize) {
 
-        let yOffset = (screenSize - boardSize) / 2
-
-        let backgroundColor = color(255, 204, 0);
-        fill(backgroundColor)
-        rect(0, yOffset, controlPannelSize, boardSize)
-
-
-        // Control pannel div
-        let controlPannel = createDiv("this is some text")
-        controlPannel.id("controlPannel")
-        controlPannel.style("height", boardSize + "px")
-        controlPannel.style("border", "1px solid black")
-        controlPannel.style("width", controlPannelSize + "px")
-        controlPannel.position(0, 0 + yOffset)
-
-        // controlPannel.parent("main")
-
-
-        // Queens Slider
-        let queensSlider = createSlider(1, 16, 8, 1)
-        queensSlider.id("queensSlider")
-        // queensSlider.position(controlPannelSize * .25, displayHeight * .25)
-        numQueens = queensSlider.value()
-
-        // frameRate Slider
-        let frameRateSlider = createSlider(100, 2000, 1000, 100)
-        frameRateSlider.id("frameRateSlider")
-
-        // Start button
-        let startButton = createButton("Start")
-        startButton.id("startButton")
-        startButton.mousePressed(beginSolver);
-
-        // Restart Button
-        let restartButton = createButton("Restart")
-        restartButton.id("restartButton")
-        restartButton.mousePressed(this.enable);
-        restartButton.attribute("disabled", "") // by default disable the disable the restart button
+// for some reason, someDumbGlobal is not able to be accessed from the constructor. It is however, able to be accessed from the startButtonFunction
 
 
 
-        // Put everything in the [DOM] div element 
-        controlPannel.child(createElement("h3", "Number of Queens"))
-        controlPannel.child(queensSlider)
-        controlPannel.child(createElement("h3", "Frame Rate (speed)"))
-        controlPannel.child(frameRateSlider)
+function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 
-        controlPannel.child(startButton)
-        controlPannel.child(restartButton)
+    let yOffset = (screenSize - boardSize) / 2
 
-    }
+    let backgroundColor = color(255, 204, 0);
+    fill(backgroundColor)
+    rect(0, yOffset, controlPannelSize, boardSize)
 
-    disable() {
-        let queensSliderPointer = select("#controlPannel #queensSlider")
-        let startButtonPointer = select("#controlPannel #startButton")
-        let restartButtonPointer = select("#controlPannel #restartButton")
 
-        queensSliderPointer.attribute("disabled", "")    // Disable the 
-        startButtonPointer.attribute("disabled", "")
-        restartButtonPointer.removeAttribute("disabled")
-    }
+    // Control pannel div
+    let controlPannel = createDiv("this is some text")
+    controlPannel.id("controlPannel")
+    controlPannel.style("height", boardSize + "px")
+    controlPannel.style("border", "1px solid black")
+    controlPannel.style("width", controlPannelSize + "px")
+    controlPannel.position(0, 0 + yOffset)
 
-    enable() {
-        console.log("Reset button pressed")
-    }
+    // controlPannel.parent("main")
 
+
+    // Queens Slider
+    let queensSlider = createSlider(1, 16, 8, 1)
+    queensSlider.id("queensSlider")
+    // queensSlider.position(controlPannelSize * .25, displayHeight * .25)
+    numQueens = queensSlider.value()
+
+    // frameRate Slider
+    let frameRateSlider = createSlider(100, 2000, 1000, 100)
+    frameRateSlider.id("frameRateSlider")
+
+    // Start button
+    let startButton = createButton("Start")
+    startButton.id("startButton")
+    startButton.mousePressed(startButtonFunction);
+
+    // Restart Button
+    let restartButton = createButton("Restart")
+    restartButton.id("restartButton")
+    restartButton.mousePressed(restartButtonFunction);
+    restartButton.attribute("disabled", "") // by default disable the disable the restart button
+
+
+    // Put everything in the [DOM] div element 
+    controlPannel.child(createElement("h3", "Number of Queens"))
+    controlPannel.child(queensSlider)
+    controlPannel.child(createElement("h3", "Frame Rate (speed)"))
+    controlPannel.child(frameRateSlider)
+
+    controlPannel.child(startButton)
+    controlPannel.child(restartButton)
+
+}
+
+// Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
+// Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.
+function startButtonFunction() {
+
+    let queensSliderPointer = select("#controlPannel #queensSlider")
+    noLoop() // disable the draw loop
+
+    disable()
+
+    solverObject = new Solver(queensSliderPointer.value())
+    solverObject.solve()
+}
+
+function restartButtonFunction() {
+
+    console.log("Reset button pressed")
+    console.log("this is my solver object " + solverObject)
+
+    solverObject.end()
+    enable()
+}
+
+function disable() {
+    let queensSliderPointer = select("#controlPannel #queensSlider")
+    let startButtonPointer = select("#controlPannel #startButton")
+    let restartButtonPointer = select("#controlPannel #restartButton")
+
+    queensSliderPointer.attribute("disabled", "")    // Disable the 
+    startButtonPointer.attribute("disabled", "")
+    restartButtonPointer.removeAttribute("disabled")
+}
+
+function enable() {
+    let queensSliderPointer = select("#controlPannel #queensSlider")
+    let startButtonPointer = select("#controlPannel #startButton")
+    let restartButtonPointer = select("#controlPannel #restartButton")
+
+    queensSliderPointer.removeAttribute("disabled")
+    startButtonPointer.removeAttribute("disabled")
+    loop()
+
+    restartButtonPointer.attribute("disabled", "")
+
+    console.log("enabled triggered")
 }
 
 function drawBoard(screenSize = screenSize, boardSize = boardSize, controlPannelOffset = controlPannelSize, numberOfQueens = 8) {
@@ -174,23 +213,7 @@ async function drawBoard3(numberOfQueens) {
 
 
 
-// Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
-// Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.
-function beginSolver() {
 
-    let queensSliderPointer = select("#controlPannel #queensSlider")
-    noLoop() // disable the draw loop
-
-
-    controlPannel.disable()
-
-    // TODO
-    // Disable start button to stop two solvers running simultaniously
-
-
-    let s = new Solver(queensSliderPointer.value())
-    s.solve()
-}
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -215,13 +238,15 @@ class Solver {
         this.yOffset = (screenSize - boardSize) / 2
         this.xOffset = controlPannelSize
         this.frameRateSlider = select("#controlPannel #frameRateSlider")
+
+        this.terminate = false
     }
 
 
     async solve() {
 
         let curr = 0
-        while (curr > -1) {
+        while (curr > -1 && !this.terminate) {
             // console.log(this.board)
 
             await drawBoard2(this.board)
@@ -257,6 +282,14 @@ class Solver {
                 this.board[curr] += 1
             }
         }
+
+    }
+
+    end() {
+        console.log("End Triggered")
+        this.terminate = !this.terminate
+        console.log(this.terminate)
+
     }
 
     async drawQueens(currentQueen) {
@@ -333,8 +366,3 @@ class Solver {
 
 }
 
-
-// for next time:
-/*
-    There are conflicts with drawing the board as well as trying to draw on the board since drawing the board is already in the draw function.
-*/
