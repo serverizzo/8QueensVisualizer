@@ -21,30 +21,17 @@ function setup() {
 
     x = 10
 
+    setupExtras()
+
 }
 
 function draw() {
 
-    // console.log(numQueens)
-
     let queensSliderPointer = select("#controlPannel #queensSlider")
-    // let frameRateSlider = select("#controlPannel #frameRateSlider")
-
-    // let numberOfQueens = queensSliderPointer.value()
-    // drawBoard(screenSize, boardSize, controlPannelSize, numberOfQueens)
-    // console.log(queensSliderPointer.value())
-
     drawBoard3(queensSliderPointer.value())
-
     frameRate(5)
-    square(x, x, 10)
+    square(x, 20, 10)
     x += 10
-
-
-
-    // frameRate(frameRateSlider.value())
-
-
 }
 
 
@@ -107,9 +94,14 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
     controlPannel.child(startButton)
     controlPannel.child(restartButton)
 
-
-
 }
+
+function setupExtras() {
+    let yOffset = (screenSize - boardSize) / 4
+    let title = createElement("h1", "NQueens")
+    title.position(0, 0 + yOffset)
+}
+
 
 // Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
 // Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.
