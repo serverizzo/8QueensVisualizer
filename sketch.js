@@ -1,3 +1,5 @@
+// import { sleep } from "./sleep";
+
 function setup() {
 
     screenSize = min(displayWidth, displayHeight)
@@ -6,7 +8,8 @@ function setup() {
     controlPannelSize = .3 * screenSize
 
     createCanvas(screenSize + 500, screenSize)
-    background(220);
+    backgroundColor = 220
+    background(backgroundColor);
 
     numQueens = 8
 
@@ -29,125 +32,49 @@ function draw() {
 
     let queensSliderPointer = select("#controlPannel #queensSlider")
     drawBoard3(queensSliderPointer.value())
+    drawAxis(queensSliderPointer.value())
     frameRate(5)
     square(x, 20, 10)
     x += 10
 }
 
 
-// for some reason, someDumbGlobal is not able to be accessed from the constructor. It is however, able to be accessed from the startButtonFunction
+// // for some reason, someDumbGlobal is not able to be accessed from the constructor. It is however, able to be accessed from the startButtonFunction
 
+function drawAxis(numberOfQueens) {
 
+    eraseLabels()
+    drawLabels(numberOfQueens)
+}
 
-function setupControlPannel(controlPannelSize, boardSize, screenSize) {
-
+function eraseLabels(numberOfQueens) {
     let yOffset = (screenSize - boardSize) / 2
-
-    let backgroundColor = color(255, 204, 0);
+    let squareSize = (boardSize / numberOfQueens)
     fill(backgroundColor)
-    rect(0, yOffset, controlPannelSize, boardSize)
-
-
-    // Control pannel div
-    let controlPannel = createDiv("this is some text")
-    controlPannel.id("controlPannel")
-    controlPannel.style("height", boardSize + "px")
-    controlPannel.style("border", "1px solid black")
-    controlPannel.style("width", controlPannelSize + "px")
-    controlPannel.position(0, 0 + yOffset)
-
-    // controlPannel.parent("main")
-
-
-    // Queens Slider
-    let queensSlider = createSlider(1, 16, 8, 1)
-    queensSlider.id("queensSlider")
-
-    numQueens = queensSlider.value()
-
-    // frameRate Slider
-    let frameRateSlider = createSlider(1, 2000, 1000, 100)
-    frameRateSlider.id("frameRateSlider")
-
-    // Start button
-    let startButton = createButton("Start")
-    startButton.id("startButton")
-    startButton.mousePressed(startButtonFunction);
-
-    // Restart Button
-    let restartButton = createButton("Restart")
-    restartButton.id("restartButton")
-    restartButton.mousePressed(restartButtonFunction);
-    restartButton.attribute("disabled", "") // by default disable the disable the restart button
-
-    // Show Check
-    // let showCheckButton = createButton("Show Check")
-
-
-
-    // Put everything in the [DOM] div element 
-    controlPannel.child(createElement("h3", "Number of Queens"))
-    controlPannel.child(queensSlider)
-    controlPannel.child(createElement("h3", "Frame Rate (speed)"))
-    controlPannel.child(frameRateSlider)
-
-    controlPannel.child(startButton)
-    controlPannel.child(restartButton)
+    // erase column labels
+    rect(controlPannelSize, yOffset - 50, boardSize, 50);
+    // erase row labels
+    rect(controlPannelSize + boardSize, yOffset, 50, boardSize);
 
 }
 
-function setupExtras() {
-    let yOffset = (screenSize - boardSize) / 4
-    let title = createElement("h1", "NQueens")
-    title.position(0, 0 + yOffset)
+function drawLabels(numberOfQueens) {
+    let yOffset = (screenSize - boardSize) / 2
+    let squareSize = (boardSize / numberOfQueens)
+    let margin = 10
+    fill(100)
+    textSize(50)
+
+    // columns
+    for (let i = 0; i < numberOfQueens; i++) {
+        text(String.fromCharCode(i + 97), (i * squareSize + controlPannelSize) + (squareSize / 2), yOffset - margin)
+    }
+
+    for (let i = 0; i < numberOfQueens; i++) {
+        text((i + 1), (controlPannelSize + boardSize) + margin, i * squareSize + (squareSize / 2) + yOffset)
+    }
 }
 
-
-// Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
-// Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.
-function startButtonFunction() {
-
-    let queensSliderPointer = select("#controlPannel #queensSlider")
-    noLoop() // disable the draw loop
-
-    disable()
-
-    solverObject = new Solver(queensSliderPointer.value())
-    solverObject.solve()
-}
-
-function restartButtonFunction() {
-
-    console.log("Reset button pressed")
-    console.log("this is my solver object " + solverObject)
-
-    solverObject.end()
-    enable()
-}
-
-function disable() {
-    let queensSliderPointer = select("#controlPannel #queensSlider")
-    let startButtonPointer = select("#controlPannel #startButton")
-    let restartButtonPointer = select("#controlPannel #restartButton")
-
-    queensSliderPointer.attribute("disabled", "")    // Disable the 
-    startButtonPointer.attribute("disabled", "")
-    restartButtonPointer.removeAttribute("disabled")
-}
-
-function enable() {
-    let queensSliderPointer = select("#controlPannel #queensSlider")
-    let startButtonPointer = select("#controlPannel #startButton")
-    let restartButtonPointer = select("#controlPannel #restartButton")
-
-    queensSliderPointer.removeAttribute("disabled")
-    startButtonPointer.removeAttribute("disabled")
-    loop()
-
-    restartButtonPointer.attribute("disabled", "")
-
-    console.log("enabled triggered")
-}
 
 function drawBoard(screenSize = screenSize, boardSize = boardSize, controlPannelOffset = controlPannelSize, numberOfQueens = 8) {
 
@@ -189,8 +116,8 @@ async function drawBoard2(board) {
 async function drawBoard3(numberOfQueens) {
 
     let yOffset = (screenSize - boardSize) / 2
-    // set the drawing point to the top left of the board
-    // translate(controlPannelSize, yOffset)
+    let squareSize = (boardSize / numberOfQueens)
+
 
     let black = color(130)
     let white = color(25)
@@ -200,177 +127,8 @@ async function drawBoard3(numberOfQueens) {
         for (let j = 0; j < numberOfQueens; j++) {
             if ((i + j) % 2 == 0) { fill(black) }
             else { fill(white) }
-            square((i * (boardSize / numberOfQueens) + controlPannelSize), (j * (boardSize / numberOfQueens)) + yOffset, boardSize / numberOfQueens)
+            square((i * squareSize + controlPannelSize), (j * squareSize) + yOffset, squareSize)
         }
     }
-}
-
-
-
-
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-class Solver {
-
-    constructor(numberOfQueens) {
-        this.numberOfQueens = numberOfQueens;
-
-        this.board = [];
-        for (let i = 0; i < this.numberOfQueens; i++) {
-            this.board.push(0)
-        }
-
-        // colors
-        this.checkColor = color(80, 224, 47)
-        this.queensColor = color(20, 20, 117)
-
-        // drawing related
-        this.squareSize = (boardSize / this.numberOfQueens)
-        this.yOffset = (screenSize - boardSize) / 2
-        this.xOffset = controlPannelSize
-        this.frameRateSlider = select("#controlPannel #frameRateSlider")
-
-        this.terminate = false
-        this.showCheck = true;
-    }
-
-
-    async solve() {
-
-        let curr = 0
-        while (curr > -1 && !this.terminate) {
-            // console.log(this.board)
-
-
-            await drawBoard2(this.board)
-
-            if (this.board[curr] >= this.numberOfQueens) {
-                await this.drawQueens(curr - 1)
-            }
-            else { await this.drawQueens(curr) }
-            await sleep(this.frameRateSlider.value())
-
-
-            // if we found a solution
-            if (curr >= this.numberOfQueens) {
-                console.log(this.board)
-                //  maybe make a pause or something?
-                curr -= 1
-                this.board[curr] += 1
-            }
-
-            if (this.board[curr] >= this.numberOfQueens) {
-                // erase queen from space
-
-                // reset queen reprsentation (do not redraw queen)
-                this.board[curr] = 0
-                // backtrack
-                curr -= 1
-                this.board[curr] += 1
-            }
-
-            else if (await this.isOkay(curr)) {
-                curr += 1
-            }
-            else {
-                this.board[curr] += 1
-            }
-        }
-
-    }
-
-    end() {
-        console.log("End Triggered")
-        this.terminate = !this.terminate
-        console.log(this.terminate)
-
-    }
-
-    toggleShowCheck() {
-
-    }
-
-    async drawQueens(currentQueen) {
-        fill(this.queensColor)
-        for (let i = 0; i < currentQueen + 1; i++) {
-            square(i * this.squareSize + this.xOffset, this.board[i] * this.squareSize + this.yOffset, this.squareSize)
-        }
-    }
-
-    async isOkay(currentQueen) {
-        // if (this.checkDiagUp(currentQueen) && this.checkLeft(currentQueen) && this.checkDiagDown(currentQueen)) {
-        // if (await this.checkLeft(currentQueen)) {
-        // if (await this.checkDiagUp(currentQueen) && await this.checkLeft(currentQueen)) {
-        if (await this.checkDiagUp(currentQueen) && await this.checkLeft(currentQueen) && await this.checkDiagDown(currentQueen)) {
-            return true
-        }
-        else { return false }
-    }
-
-    async checkDiagDown(currentQueen) {
-        for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] + i < this.numberOfQueens; i++) {
-
-            if (this.showCheck) {
-                fill(this.checkColor)
-                square((currentQueen - i) * this.squareSize + this.xOffset, (this.board[currentQueen] + i) * this.squareSize + this.yOffset, this.squareSize)
-                console.log("hello from checkdiagDown")
-
-                await sleep(this.frameRateSlider.value())
-                await drawBoard2(this.board)
-                await this.drawQueens(currentQueen)
-            }
-
-            if (this.board[currentQueen] + i == this.board[currentQueen - i]) {
-                return false
-            }
-        }
-        return true
-    }
-
-    async checkLeft(currentQueen) {
-
-        for (let currentCheck = currentQueen - 1; currentCheck > -1; currentCheck--) {
-
-            if (this.showCheck) {
-                fill(this.checkColor)
-                square((currentCheck * this.squareSize) + this.xOffset, (this.board[currentQueen] * this.squareSize) + this.yOffset, this.squareSize)
-                console.log("hello from checkleft")
-
-                await sleep(this.frameRateSlider.value())
-                await drawBoard2(this.board)
-                await this.drawQueens(currentQueen)
-            }
-
-            if (this.board[currentQueen] == this.board[currentCheck]) {
-                return false
-            }
-
-        }
-        return true
-    }
-
-    async checkDiagUp(currentQueen) {
-
-        for (let i = 1; currentQueen - i > -1 && this.board[currentQueen] - i > -1; i++) {
-
-            if (this.showCheck) {
-                fill(this.checkColor)
-                square((currentQueen - i) * (this.squareSize) + this.xOffset, ((this.board[currentQueen] - i) * this.squareSize) + this.yOffset, this.squareSize)
-
-                await sleep(this.frameRateSlider.value())
-                await drawBoard2(this.board)
-                await this.drawQueens(currentQueen)
-            }
-
-            if (this.board[currentQueen] - i == this.board[currentQueen - i]) {
-                return false
-            }
-        }
-        return true
-    }
-
 }
 
