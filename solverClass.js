@@ -49,6 +49,8 @@ class Solver {
                 //  maybe make a pause or something?
                 this.curr -= 1
                 this.board[this.curr] += 1
+                this.togglePause()
+                break
             }
 
             if (this.board[this.curr] >= this.numberOfQueens) {

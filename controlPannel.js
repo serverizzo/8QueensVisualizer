@@ -49,7 +49,7 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
     let pauseButton = createButton("Pause")
     pauseButton.id("pauseButton")
     pauseButton.mousePressed(pauseButtonFunction)
-    pauseButton.attribute("disables", "")
+    pauseButton.attribute("disabled", "")
 
 
     // Put everything in the [DOM] div element 
@@ -95,6 +95,14 @@ function restartButtonFunction() {
 }
 
 function pauseButtonFunction() {
+    let pauseButton = select("#controlPannel #pauseButton")
+
+
+    // console.log(pauseButton.)
+    if (pauseButton.html() == "Pause") {
+        pauseButton.html("Resume")
+    }
+    else { pauseButton.html("Pause") }
     solverObject.togglePause()
 }
 
