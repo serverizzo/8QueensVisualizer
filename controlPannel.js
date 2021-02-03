@@ -46,6 +46,10 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
     // Show Check
     // let showCheckButton = createButton("Show Check")
 
+    let pauseButton = createButton("Pause")
+    pauseButton.id("pauseButton")
+    pauseButton.mousePressed(pauseButtonFunction)
+    pauseButton.attribute("disables", "")
 
 
     // Put everything in the [DOM] div element 
@@ -56,6 +60,7 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 
     controlPannel.child(startButton)
     controlPannel.child(restartButton)
+    controlPannel.child(pauseButton)
 
 }
 
@@ -75,6 +80,7 @@ function startButtonFunction() {
 
     disable()
 
+    // create a new solver object everytime the button is pressed 
     solverObject = new Solver(queensSliderPointer.value())
     solverObject.solve()
 }
@@ -88,26 +94,34 @@ function restartButtonFunction() {
     enable()
 }
 
+function pauseButtonFunction() {
+    solverObject.togglePause()
+}
+
 function disable() {
     let queensSliderPointer = select("#controlPannel #queensSlider")
     let startButtonPointer = select("#controlPannel #startButton")
     let restartButtonPointer = select("#controlPannel #restartButton")
+    let pauseButton = select("#controlPannel #pauseButton")
 
     queensSliderPointer.attribute("disabled", "")    // Disable the 
     startButtonPointer.attribute("disabled", "")
     restartButtonPointer.removeAttribute("disabled")
+    pauseButton.removeAttribute("disabled")
 }
 
 function enable() {
     let queensSliderPointer = select("#controlPannel #queensSlider")
     let startButtonPointer = select("#controlPannel #startButton")
     let restartButtonPointer = select("#controlPannel #restartButton")
+    let pauseButton = select("#controlPannel #pauseButton")
 
     queensSliderPointer.removeAttribute("disabled")
     startButtonPointer.removeAttribute("disabled")
     loop()
 
     restartButtonPointer.attribute("disabled", "")
+    pauseButton.attribute("disabled", "")
 
     console.log("enabled triggered")
 }

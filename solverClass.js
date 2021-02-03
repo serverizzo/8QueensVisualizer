@@ -20,51 +20,60 @@ class Solver {
 
         this.terminate = false
         this.showCheck = true;
+
+        // if we make this a global we can re-call the solve function and the loop will pick up from where it left off
+        this.curr = 0
+        this.pause = false
     }
 
 
     async solve() {
+        while (this.curr > -1 && !this.terminate) {
 
-        let curr = 0
-        while (curr > -1 && !this.terminate) {
-            // console.log(this.board)
-
+            if (this.pause) {
+                break
+            }
 
             await drawBoard2(this.board)
 
-            if (this.board[curr] >= this.numberOfQueens) {
-                await this.drawQueens(curr - 1)
+            if (this.board[this.curr] >= this.numberOfQueens) {
+                await this.drawQueens(this.curr - 1)
             }
-            else { await this.drawQueens(curr) }
+            else { await this.drawQueens(this.curr) }
             await sleep(this.frameRateSlider.value())
 
 
             // if we found a solution
-            if (curr >= this.numberOfQueens) {
+            if (this.curr >= this.numberOfQueens) {
                 console.log(this.board)
                 //  maybe make a pause or something?
-                curr -= 1
-                this.board[curr] += 1
+                this.curr -= 1
+                this.board[this.curr] += 1
             }
 
-            if (this.board[curr] >= this.numberOfQueens) {
+            if (this.board[this.curr] >= this.numberOfQueens) {
                 // erase queen from space
 
                 // reset queen reprsentation (do not redraw queen)
-                this.board[curr] = 0
+                this.board[this.curr] = 0
                 // backtrack
-                curr -= 1
-                this.board[curr] += 1
+                this.curr -= 1
+                this.board[this.curr] += 1
             }
 
-            else if (await this.isOkay(curr)) {
-                curr += 1
+            else if (await this.isOkay(this.curr)) {
+                this.curr += 1
             }
             else {
-                this.board[curr] += 1
+                this.board[this.curr] += 1
             }
         }
 
+    }
+
+    togglePause() {
+        this.pause = !this.pause
+        this.solve()
     }
 
     end() {

@@ -54,7 +54,7 @@ function eraseLabels(numberOfQueens) {
     // erase column labels
     rect(controlPannelSize, yOffset - 50, boardSize, 50);
     // erase row labels
-    rect(controlPannelSize + boardSize, yOffset, 50, boardSize);
+    rect(controlPannelSize + boardSize, yOffset, 60, boardSize);
 
 }
 
