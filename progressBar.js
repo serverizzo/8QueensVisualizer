@@ -14,7 +14,7 @@ class ProgressBar {
         this.numberOfQueens = numQueens
 
         let container = createDiv("<h3>Progress bar:</h3>")
-        container.style("border", "1px solid black")
+        // container.style("border", "1px solid black")
         container.style("width", this.containerWidth + "px")
         container.style("height", this.containerHeight + "px")
         container.position(this.xpos, this.ypos)
@@ -27,6 +27,18 @@ class ProgressBar {
 
 
     async updateProgressBar(board) {
+
+        fill(color(255, 204, 0))
+        noStroke()
+        rect(this.xpos - 10, this.ypos + this.yOffsetBar - 1, this.containerWidth + 10, 20 + 2)
+
+        stroke(0)
+        strokeWeight(1)
+
+        fill(color(130))
+        rect(this.xpos, this.ypos + this.yOffsetBar, this.containerWidth, 20, 20);
+
+
 
         let current = 0
         for (let i = 0; i < board.length; i++) {
