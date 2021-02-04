@@ -8,6 +8,7 @@ function setup() {
     controlPannelSize = .3 * screenSize
 
     createCanvas(screenSize + 500, screenSize)
+
     backgroundColor = 220
     background(backgroundColor);
 
@@ -25,6 +26,7 @@ function setup() {
     x = 10
 
     setupExtras()
+    // progressBar.updateProgressBar(0)
 
 }
 

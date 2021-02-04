@@ -1,6 +1,9 @@
 class Solver {
 
     constructor(numberOfQueens) {
+
+        this.progressBar = new ProgressBar(numberOfQueens);
+
         this.numberOfQueens = numberOfQueens;
 
         this.board = [];
@@ -33,6 +36,8 @@ class Solver {
             if (this.pause) {
                 break
             }
+
+            await this.progressBar.updateProgressBar(this.board)
 
             await drawBoard2(this.board)
 
@@ -69,6 +74,7 @@ class Solver {
             else {
                 this.board[this.curr] += 1
             }
+
         }
 
     }
