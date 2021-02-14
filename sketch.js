@@ -25,8 +25,9 @@ function setup() {
 
     x = 10
 
-    setupExtras()
-    // progressBar.updateProgressBar(0)
+    title()
+
+    description()
 
 }
 

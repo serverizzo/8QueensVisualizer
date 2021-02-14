@@ -64,12 +64,35 @@ function setupControlPannel(controlPannelSize, boardSize, screenSize) {
 
 }
 
-function setupExtras() {
+function title() {
     let yOffset = (screenSize - boardSize) / 4
     let title = createElement("h1", "NQueens")
     title.position(0, 0 + yOffset)
 }
 
+function description() {
+
+    // let body = select("body")
+    // console.log(body)
+
+    let description = createDiv()
+    description.id("description")
+
+    description.html("<h1> The NQueens Problem </h1> <br> <p> Problem description: <br> Given a N by N board, place N queens such that none of the Queens will want to attack each other.<br>")
+    description.html("To find a solution, we use a technique called backtracking. Here is how it works:<br>", true)
+    description.html("After pressing start, a blue square will appear in the top left corner, representing a queen.<br>", true)
+    description.html("This queen will undergo a series of checks, represented by a green square. More specifically, it will check its diagonals and check the row it is in. Note how we only checks to the left.<br> ", true)
+    description.html("If during the check we encounter another queen, move the current queen down to the next row, otherwise, keep it on that row and place anoter queen on the next column (on the top the row) repeating this procedure.<br>", true)
+    description.html("If during this procedure we move off the bottom of the board, it means there are no more possible places to move our queen such that we can make a valid solution. Therefore, we need to backtrack.", true)
+    description.html("Backtracking in this case means moving back a column to the previous queen and moving it down to the next row, then repeating the same checking proceedure again.<br>", true)
+    description.html("There are two things we look out for now: <br>", true)
+    description.html("1) If we move off the right side of the board it means we have found a valid solution. <br>", true)
+    description.html("2) If we backtrack (move to the left) beyond the first column the algorithm is complete. <br>", true)
+    description.html("Note: we only check to the left because we assume that as we are moving to the right while placing queens, there is currently nothing to check to the right.", true)
+    description.html("", true)
+
+
+}
 
 // Note: trying to attach the solve function (the one inside the Solver class) to the start button has breaking effects. 
 // Therefore I created a wrapper function to attach to the start button, if I am looking at this later confused.

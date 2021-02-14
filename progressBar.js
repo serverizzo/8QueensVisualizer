@@ -15,6 +15,7 @@ class ProgressBar {
 
         let container = createDiv("<h3>Progress bar:</h3>")
         // container.style("border", "1px solid black")
+        container.id("progressBarContainer")
         container.style("width", this.containerWidth + "px")
         container.style("height", this.containerHeight + "px")
         container.position(this.xpos, this.ypos)
